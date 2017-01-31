@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html ng-app="krotApp">
+<head>
+    <title>Heating control</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+
+
+    <!--<link href="/webjars/bootstrap/css/bootstrap.min.css" rel="stylesheet">-->
+    <link href="/main.css" rel="stylesheet">
+    <script
+            src="https://code.jquery.com/jquery-3.1.1.min.js"
+            integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+            crossorigin="anonymous"></script>
+    <!--<script src="/webjars/sockjs-client/sockjs.min.js"></script>-->
+    <!--<script src="/webjars/stomp-websocket/stomp.min.js"></script>-->
+    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
+
+    <script src="/MainTableController.js"></script>
+</head>
+<body>
+<noscript><h2 style="color: #ff0000">Seems your browser doesn't support Javascript! Websocket relies on Javascript being
+    enabled. Please enable
+    Javascript and reload this page!</h2></noscript>
+<div id="main-content" class="container" ng-controller="MainTableController as main" ng-cloak>
+    <div class="row">
+        <div class="col-md-12">
+            <form class="form-inline">
+                <div class="form-group">
+                    <label for="connect">WebSocket connection:</label>
+                    <button id="connect" ng-click="main.connect()" class="btn btn-default" type="submit">Connect
+                    </button>
+                    <button id="disconnect" ng-click="main.disconnect()" class="btn btn-default" type="submit"
+                            disabled="disabled">Disconnect
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <form class="form-inline">
+                <div class="form-group">
+                    <label for="heating">Enable/Disable Heating</label>
+                    <input type="checkbox" id="heating" data-toggle="toggle">
+                    <span>{{main.heatingStatus.changeTime|date:'medium'}}</span>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-6">
+            <form class="form-inline">
+                <div class="form-group">
+                    <label for="periodicalHeating">Enable/Disable Periodical Heating</label>
+                    <input type="checkbox" id="periodicalHeating" data-toggle="toggle">
+                    <label for="periodicalHeatingTimeout">Heating period</label>
+                    <select ng-disabled="main.heatingStatus.enablePeriodicalHeating" class="form-control"
+                            id="periodicalHeatingTimeout" ng-model="main.heatingTimeout"
+                            ng-options="option.title for option in main.heatingPeriodOptions track by option.value">>
+                        <!--<option ng-repeat="option in main.heatingPeriodOptions" value="{{::option.value}}">{{::option.title}}</option>-->
+                    </select>
+                    <label for="heatingDuration">heating duration</label>
+                    <select ng-disabled="main.heatingStatus.enablePeriodicalHeating" class="form-control"
+                            id="heatingDuration" ng-model="main.heatingDuration"
+                            ng-options="option.title for option in main.heatingDurationOptions track by option.value">
+                        <!--<option ng-repeat="option in main.heatingDurationOptions" value="{{::option.value}}">{{::option.title}}</option>-->
+                    </select>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <table id="conversation" class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Temperature</th>
+                    <th>Humidity</th>
+                    <th>Heating Status</th>
+                    <th>Synchronization Time</th>
+                </tr>
+
+                </thead>
+                <tbody id="greetings">
+                <tr ng-repeat="data in main.dataFromRaspberry">
+                    <td>{{::data.temperature}} &deg;C</td>
+                    <td>{{::data.humidity}} %</td>
+                    <td><span ng-show="::data.heatingStatus" class='glyphicon glyphicon-flash'
+                              aria-hidden="true"></span></td>
+                    <td>{{::data.syncTime|date:'medium'}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+
+                <button type="button" ng-click="main.previous()" class="btn btn-default">previous</button>
+
+                <button type="button" ng-click="main.next()" class="btn btn-default">next</button>
+
+        </div>
+    </div>
+    </form>
+</div>
+</body>
+</html>

@@ -1,4 +1,4 @@
-package hello.controller;
+package hello.controller.web;
 
 import hello.entity.RConfig;
 import hello.repository.RConfigRepository;

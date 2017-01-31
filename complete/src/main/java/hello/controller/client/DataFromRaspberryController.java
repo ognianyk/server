@@ -1,23 +1,21 @@
-package hello.controller;
+package hello.controller.client;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.oracle.javafx.jmx.json.JSONReader;
 import hello.entity.DataFromRaspberry;
 import hello.entity.RConfig;
 import hello.repository.DataFromRaspberryRepository;
 import hello.repository.RConfigRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 
 @Controller
 public class DataFromRaspberryController {
@@ -35,18 +33,17 @@ public class DataFromRaspberryController {
     }
 
 
-
-
-
-    @RequestMapping(value = "/add_data" , method = RequestMethod.POST)
+    @RequestMapping(value = "/add_data", method = RequestMethod.POST)
     @ResponseBody
     DataFromRaspberry addData(@RequestBody String input) throws IOException {
-        HashMap<String,Object> result =
+        HashMap<String, Object> result =
                 new ObjectMapper().readValue(input, HashMap.class);
+        String temperature = String.valueOf(result.get("temperature"));
+        String humidity = String.valueOf(result.get("humidity"));
         DataFromRaspberry dataFromRaspberry = new DataFromRaspberry()
-                .setHumidity((String)result.get("humidity"))
-                .setTemperature((String)result.get("temperature"))
-                .setHeatingStatus((Boolean)result.get("heating"))
+                .setHumidity(humidity)
+                .setTemperature(temperature)
+                .setHeatingStatus((Boolean) result.get("heating"))
                 .setSyncTime(new Date());
         dataFromRaspberryRepository.save(dataFromRaspberry);
         template.convertAndSend("/topic/greetings", dataFromRaspberry);
@@ -61,9 +58,6 @@ public class DataFromRaspberryController {
 
 
     }
-
-
-
 
 
 }

@@ -1,4 +1,4 @@
-package hello.controller;
+package hello.controller.web;
 
 import hello.entity.DataFromRaspberry;
 import hello.repository.DataFromRaspberryRepository;
@@ -28,27 +28,20 @@ public class WebSiteLiveData {
     @RequestMapping("/get_data")
     @ResponseBody
     public List<DataFromRaspberry> getAllData(@RequestParam(value = "page", required = false) Integer page) throws Exception {
-
         if (page == null) {
             page = 0;
         }
         PageRequest pageable = new PageRequest(page, 10, Sort.Direction.DESC, "Id");
         List<DataFromRaspberry> list = toList(
                 dataFromRaspberryRepository.findAll(pageable));
-//        Collections.reverse(list);
         return list;
 
     }
 
     public static <E> List<E> toList(Iterable<E> iterable) {
-        if (iterable instanceof List) {
-            return (List<E>) iterable;
-        }
         ArrayList<E> list = new ArrayList<E>();
         if (iterable != null) {
-            for (E e : iterable) {
-                list.add(e);
-            }
+            iterable.forEach(list::add);
         }
         return list;
     }

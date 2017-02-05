@@ -42,8 +42,8 @@
         <div class="col-md-6">
             <form class="form-inline">
                 <div class="form-group">
-                    <label for="heating">Enable/Disable Heating</label>
-                    <input type="checkbox" id="heating" data-toggle="toggle">
+                    <label for="heatingStatus">Enable/Disable Heating</label>
+                    <input type="checkbox" id="heatingStatus" data-toggle="toggle">
                     <span>{{main.heatingStatus.changeTime|date:'medium'}}</span>
                 </div>
             </form>
@@ -59,7 +59,7 @@
                             ng-options="option.title for option in main.heatingPeriodOptions track by option.value">>
                         <!--<option ng-repeat="option in main.heatingPeriodOptions" value="{{::option.value}}">{{::option.title}}</option>-->
                     </select>
-                    <label for="heatingDuration">heating duration</label>
+                    <label for="heatingDuration">heatingStatus duration</label>
                     <select ng-disabled="main.heatingStatus.enablePeriodicalHeating" class="form-control"
                             id="heatingDuration" ng-model="main.heatingDuration"
                             ng-options="option.title for option in main.heatingDurationOptions track by option.value">
@@ -82,12 +82,19 @@
 
                 </thead>
                 <tbody id="greetings">
-                <tr ng-repeat="data in main.dataFromRaspberry">
+                <tr ng-repeat-start="data in main.dataFromRaspberry" ng-click="data.isCollapsed = !data.isCollapsed">
                     <td>{{::data.temperature}} &deg;C</td>
                     <td>{{::data.humidity}} %</td>
                     <td><span ng-show="::data.heatingStatus" class='glyphicon glyphicon-flash'
                               aria-hidden="true"></span></td>
                     <td>{{::data.syncTime|date:'medium'}}</td>
+                </tr>
+                <tr ng-if="data.isCollapsed">
+                    <td colspan="4">Additional sensors:</td>
+                </tr>
+                <tr ng-if="data.isCollapsed" ng-repeat="sensor in data.sensorEntityList"  ng-repeat-end>
+                    <td colspan="2">{{::sensor.temperature}} &deg;C</td>
+                    <td colspan="2">{{::sensor.humidity}} %</td>
                 </tr>
                 </tbody>
             </table>

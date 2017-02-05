@@ -1,7 +1,7 @@
-package hello.controller.web;
+package ognianyk.pavel.controller.web;
 
-import hello.entity.RConfig;
-import hello.repository.RConfigRepository;
+import ognianyk.pavel.entity.RConfig;
+import ognianyk.pavel.repository.RConfigRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;

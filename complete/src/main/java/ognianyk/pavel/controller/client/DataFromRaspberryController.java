@@ -1,10 +1,12 @@
-package hello.controller.client;
+package ognianyk.pavel.controller.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import hello.entity.DataFromRaspberry;
-import hello.entity.RConfig;
-import hello.repository.DataFromRaspberryRepository;
-import hello.repository.RConfigRepository;
+import ognianyk.pavel.entity.AdditionalSensorEntity;
+import ognianyk.pavel.entity.DataFromRaspberry;
+import ognianyk.pavel.entity.RConfig;
+import ognianyk.pavel.repository.AdditionalSensorRepository;
+import ognianyk.pavel.repository.DataFromRaspberryRepository;
+import ognianyk.pavel.repository.RConfigRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
@@ -23,6 +25,8 @@ public class DataFromRaspberryController {
     private final SimpMessagingTemplate template;
     @Autowired
     private DataFromRaspberryRepository dataFromRaspberryRepository;
+    @Autowired
+    private AdditionalSensorRepository additionalSensorRepository;
 
     @Autowired
     private RConfigRepository configRepository;
@@ -36,16 +40,17 @@ public class DataFromRaspberryController {
     @RequestMapping(value = "/add_data", method = RequestMethod.POST)
     @ResponseBody
     DataFromRaspberry addData(@RequestBody String input) throws IOException {
-        HashMap<String, Object> result =
-                new ObjectMapper().readValue(input, HashMap.class);
-        String temperature = String.valueOf(result.get("temperature"));
-        String humidity = String.valueOf(result.get("humidity"));
-        DataFromRaspberry dataFromRaspberry = new DataFromRaspberry()
-                .setHumidity(humidity)
-                .setTemperature(temperature)
-                .setHeatingStatus((Boolean) result.get("heating"))
+        DataFromRaspberry dataFromRaspberry =
+                new ObjectMapper().readValue(input, DataFromRaspberry.class);
+
+        dataFromRaspberry
                 .setSyncTime(new Date());
-        dataFromRaspberryRepository.save(dataFromRaspberry);
+        DataFromRaspberry dataFromRaspberrySaved = dataFromRaspberryRepository.save(dataFromRaspberry);
+        for (AdditionalSensorEntity additionalSensorEntity : dataFromRaspberry.getSensorEntityList()) {
+            additionalSensorEntity.setDataFromRaspberry(dataFromRaspberrySaved);
+            additionalSensorRepository.save(additionalSensorEntity);
+        }
+        DataFromRaspberry dataFromRaspberryFull = dataFromRaspberryRepository.findOne(dataFromRaspberrySaved.getId());
         template.convertAndSend("/topic/greetings", dataFromRaspberry);
         return dataFromRaspberry;
 

@@ -1,7 +1,6 @@
-package hello.repository;
+package ognianyk.pavel.repository;
 
-import hello.entity.DataFromRaspberry;
-import hello.entity.RConfig;
+import ognianyk.pavel.entity.RConfig;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

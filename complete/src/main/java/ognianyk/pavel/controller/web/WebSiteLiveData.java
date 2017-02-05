@@ -1,19 +1,15 @@
-package hello.controller.web;
+package ognianyk.pavel.controller.web;
 
-import hello.entity.DataFromRaspberry;
-import hello.repository.DataFromRaspberryRepository;
-import org.hibernate.mapping.Collection;
+import ognianyk.pavel.entity.DataFromRaspberry;
+import ognianyk.pavel.repository.DataFromRaspberryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**

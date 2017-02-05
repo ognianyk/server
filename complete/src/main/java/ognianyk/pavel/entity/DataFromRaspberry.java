@@ -1,20 +1,15 @@
-package hello.entity;
+package ognianyk.pavel.entity;
 
-import org.springframework.boot.autoconfigure.domain.EntityScan;
-import org.springframework.core.serializer.Serializer;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by pavelognianyk on 10/24/16.
  */
 @Entity
-public class DataFromRaspberry implements Serializable{
+public class DataFromRaspberry implements Serializable {
 
     @Id
     @GeneratedValue
@@ -31,7 +26,12 @@ public class DataFromRaspberry implements Serializable{
 
     @Column(nullable = false)
     private Date syncTime;
+    @OneToMany(mappedBy = "dataFromRaspberry", fetch = FetchType.EAGER)
+    private List<AdditionalSensorEntity> sensorEntityList;
 
+    public Long getId() {
+        return id;
+    }
 
     public DataFromRaspberry() {
     }
@@ -73,6 +73,15 @@ public class DataFromRaspberry implements Serializable{
 
     public DataFromRaspberry setSyncTime(Date syncTime) {
         this.syncTime = syncTime;
+        return this;
+    }
+
+    public List<AdditionalSensorEntity> getSensorEntityList() {
+        return sensorEntityList;
+    }
+
+    public DataFromRaspberry setSensorEntityList(List<AdditionalSensorEntity> sensorEntityList) {
+        this.sensorEntityList = sensorEntityList;
         return this;
     }
 }
